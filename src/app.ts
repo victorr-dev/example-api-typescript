@@ -1,19 +1,25 @@
-import express  from 'express'
+import express, {Application} from 'express'
 import morgan from 'morgan'
 
-const app = express()
+export default class App {
+    
+    public app: Application;
+    private port : number;
 
-app.set('port', process.env.PORT || 4000)
+    constructor(port:number = 4000) {
+        this.port = port;
+        this.app = express();
+        this.configMiddlewares();
+    }
 
-morgan('dev')
-app.use(express.json())
+    private configMiddlewares():void {
+        this.app.use(morgan('dev'));
+        this.app.use(express.json());
+    }
 
-app.get('/', async (req, res, next) =>{
-    return res.json({
-        success: true,
-        body: "Hola Mundo"
-    })
-} )
+    public startServer(): void {
+        this.app.listen(this.port);
+        console.log(`Server is running on port ${this.port}`)
+    } 
 
-
-export default app
+}
